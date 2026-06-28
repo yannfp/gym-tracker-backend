@@ -13,4 +13,12 @@ public class UserRepository implements PanacheRepository<UserModel> {
   public UserModel findById(UUID id) {
     return find("id", id).firstResult();
   }
+
+  public UserModel findByEmail(String email) {
+    return find("email", email).firstResult();
+  }
+
+  public UserModel findByUsername(String username) {
+    return find("username", username).firstResult();
+  }
 }
