@@ -2,13 +2,16 @@ package com.gymtracker.domain.service;
 
 import java.util.UUID;
 
+import com.gymtracker.converter.UserConverter;
 import com.gymtracker.data.model.UserModel;
 import com.gymtracker.data.repository.UserRepository;
+import com.gymtracker.presentation.api.response.UserResponse;
 
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
@@ -18,8 +21,20 @@ public class UserService {
   @Inject
   UserRepository userRepository;
 
+  @Inject
+  UserConverter userConverter;
+
   public UserModel findById(UUID id) {
     return userRepository.findById(id);
+  }
+
+  public UserResponse findbyId(UUID id) {
+    UserModel user = findById(id);
+    if (user == null) {
+      throw new BadRequestException("User not found");
+    }
+
+    return userConverter.toUserResponse(user);
   }
 
   public UserModel findByEmail(String email) {
@@ -68,5 +83,37 @@ public class UserService {
     }
 
     return user;
+  }
+
+  @Transactional
+  public UserResponse updateUser(UUID userId, String newEmail, String newUsername, String newPassword,
+      String newFirstname, String newLastname) {
+
+    UserModel user = findById(userId);
+    if (user == null) {
+      throw new BadRequestException("User not found");
+    }
+
+    if (newEmail != null && !newEmail.isBlank()) {
+      user.email = newEmail;
+    }
+
+    if (newUsername != null && !newUsername.isBlank()) {
+      user.username = newUsername;
+    }
+
+    if (newPassword != null && !newPassword.isBlank()) {
+      user.password = BcryptUtil.bcryptHash(newPassword);
+    }
+
+    if (newFirstname != null && !newFirstname.isBlank()) {
+      user.firstname = newFirstname;
+    }
+
+    if (newLastname != null && !newLastname.isBlank()) {
+      user.lastname = newLastname;
+    }
+
+    return userConverter.toUserResponse(user);
   }
 }
