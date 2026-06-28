@@ -6,6 +6,7 @@ import com.gymtracker.data.model.UserModel;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class UserRepository implements PanacheRepository<UserModel> {
@@ -20,5 +21,10 @@ public class UserRepository implements PanacheRepository<UserModel> {
 
   public UserModel findByUsername(String username) {
     return find("username", username).firstResult();
+  }
+
+  @Transactional
+  public void createUser(UserModel user) {
+    persist(user);
   }
 }
