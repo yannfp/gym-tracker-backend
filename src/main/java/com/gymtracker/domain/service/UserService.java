@@ -9,8 +9,9 @@ import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 
 @ApplicationScoped
 public class UserService {
@@ -36,7 +37,7 @@ public class UserService {
   @Transactional
   public UserModel registerUser(String email, String username, String password, String firstname, String lastname) {
     if (doesUserExist(email, username)) {
-      throw new BadRequestException("Email or username already in use");
+      throw new WebApplicationException("Email or username already in use", Response.Status.CONFLICT);
     }
 
     UserModel user = new UserModel();
