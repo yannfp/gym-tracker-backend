@@ -47,7 +47,7 @@ public class AuthResource {
   @POST
   @Path("login")
   @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = AuthResponse.class)))
-  @APIResponse(responseCode = "400", description = "Email or username required")
+  @APIResponse(responseCode = "400", description = "Missing email or username")
   @APIResponse(responseCode = "401", description = "Invalid credentials")
   public Response login(@Valid LoginRequest request) {
     if (request.email == null && request.username == null) {
