@@ -7,7 +7,7 @@ import com.gymtracker.presentation.api.response.AuthResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotAuthorizedException;
 
 @ApplicationScoped
 public class AuthService {
@@ -19,14 +19,21 @@ public class AuthService {
   UserService userService;
 
   @Transactional
-  public AuthResponse register(RegisterRequest request) {
+  public AuthResponse register(String email, String username, String password, String firstname, String lastname) {
+    UserModel user = userService.registerUser(email, username, password, firstname, lastname);
 
-    if (userService.doesUserExist(request.email, request.username)) {
-      throw new BadRequestException("Email or username already in use");
+    String accessToken = tokenService.generateAccessToken(user);
+    String refreshToken = tokenService.generateRefreshToken(user);
+
+    return new AuthResponse(accessToken, refreshToken);
+  }
+
+  public AuthResponse login(String email, String username, String password) {
+
+    UserModel user = userService.authenticate(email, username, password);
+    if (user == null) {
+      throw new NotAuthorizedException("Invalid credentials");
     }
-
-    UserModel user = userService.createUser(request.email, request.username, request.password, request.firstname,
-        request.lastname);
 
     String accessToken = tokenService.generateAccessToken(user);
     String refreshToken = tokenService.generateRefreshToken(user);
