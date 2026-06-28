@@ -5,6 +5,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import com.gymtracker.domain.service.AuthService;
+import com.gymtracker.domain.service.TokenService;
 import com.gymtracker.presentation.api.request.LoginRequest;
 import com.gymtracker.presentation.api.request.RegisterRequest;
 import com.gymtracker.presentation.api.response.AuthResponse;
@@ -16,6 +17,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -26,6 +28,9 @@ public class AuthResource {
 
   @Inject
   AuthService authService;
+
+  @Inject
+  TokenService tokenService;
 
   @POST
   @Path("/register")
@@ -45,7 +50,7 @@ public class AuthResource {
   }
 
   @POST
-  @Path("login")
+  @Path("/login")
   @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = AuthResponse.class)))
   @APIResponse(responseCode = "400", description = "Missing email or username")
   @APIResponse(responseCode = "401", description = "Invalid credentials")
@@ -55,6 +60,16 @@ public class AuthResource {
     }
 
     AuthResponse response = authService.login(request.email, request.username, request.password);
+
+    return Response.ok(response).build();
+  }
+
+  @POST
+  @Path("/refresh")
+  @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = AuthResponse.class)))
+  @APIResponse(responseCode = "401", description = "Invalid or expired refresh token")
+  public Response refresh(@QueryParam("token") String refreshToken) {
+    AuthResponse response = tokenService.refreshAccessToken(refreshToken);
 
     return Response.ok(response).build();
   }
