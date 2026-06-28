@@ -23,5 +23,5 @@ public class SetModel {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "workout_exercise_id", nullable = false)
-  public WorkoutExerciseModel exercise;
+  public WorkoutExerciseModel workoutExercise;
 }
