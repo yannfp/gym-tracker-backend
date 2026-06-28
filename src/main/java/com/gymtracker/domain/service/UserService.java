@@ -24,4 +24,8 @@ public class UserService {
   public UserModel findByUsername(String username) {
     return userRepository.findByUsername(username);
   }
+
+  public Boolean doesUserExist(String email, String username) {
+    return findByEmail(email) == null && findByUsername(username) == null;
+  }
 }
