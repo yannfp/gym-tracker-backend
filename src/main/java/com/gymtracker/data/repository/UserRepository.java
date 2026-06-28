@@ -10,7 +10,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class UserRepository implements PanacheRepository<UserModel> {
 
-  UserModel findById(UUID id) {
+  public UserModel findById(UUID id) {
     return find("id", id).firstResult();
   }
 }
