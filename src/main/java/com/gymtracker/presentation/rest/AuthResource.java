@@ -30,6 +30,7 @@ public class AuthResource {
   @POST
   @Path("/register")
   @APIResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = AuthResponse.class)))
+  @APIResponse(responseCode = "409", description = "Email or username already in use")
   public Response register(@Valid RegisterRequest request) {
     if (request == null) {
       throw new BadRequestException("The body of the request is empty");
@@ -46,11 +47,9 @@ public class AuthResource {
   @POST
   @Path("login")
   @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = AuthResponse.class)))
+  @APIResponse(responseCode = "400", description = "Email or username required")
+  @APIResponse(responseCode = "401", description = "Invalid credentials")
   public Response login(@Valid LoginRequest request) {
-    if (request == null) {
-      throw new BadRequestException("The body of the request is empty");
-    }
-
     if (request.email == null && request.username == null) {
       throw new BadRequestException("Email or username is required");
     }
