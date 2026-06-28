@@ -9,6 +9,8 @@ import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotAuthorizedException;
 
 @ApplicationScoped
 public class UserService {
@@ -32,7 +34,11 @@ public class UserService {
   }
 
   @Transactional
-  public UserModel createUser(String email, String username, String password, String firstname, String lastname) {
+  public UserModel registerUser(String email, String username, String password, String firstname, String lastname) {
+    if (doesUserExist(email, username)) {
+      throw new BadRequestException("Email or username already in use");
+    }
+
     UserModel user = new UserModel();
 
     user.email = email;
@@ -42,6 +48,23 @@ public class UserService {
     user.lastname = lastname;
 
     userRepository.createUser(user);
+
+    return user;
+  }
+
+  public UserModel authenticate(String email, String username, String password) {
+    if (!doesUserExist(email, username)) {
+      throw new NotAuthorizedException("Invalid credentials");
+    }
+
+    UserModel user = findByEmail(email);
+    if (user == null) {
+      user = findByUsername(username);
+    }
+
+    if (!BcryptUtil.matches(password, user.password)) {
+      throw new NotAuthorizedException("Invalid credentials");
+    }
 
     return user;
   }
