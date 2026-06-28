@@ -5,8 +5,10 @@ import java.util.UUID;
 import com.gymtracker.data.model.UserModel;
 import com.gymtracker.data.repository.UserRepository;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class UserService {
@@ -27,5 +29,20 @@ public class UserService {
 
   public Boolean doesUserExist(String email, String username) {
     return findByEmail(email) == null && findByUsername(username) == null;
+  }
+
+  @Transactional
+  public UserModel createUser(String email, String username, String password, String firstname, String lastname) {
+    UserModel user = new UserModel();
+
+    user.email = email;
+    user.username = username;
+    user.password = BcryptUtil.bcryptHash(password);
+    user.firstname = firstname;
+    user.lastname = lastname;
+
+    userRepository.createUser(user);
+
+    return user;
   }
 }
