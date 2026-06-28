@@ -13,11 +13,11 @@ public class UserModel {
   @Column(name = "id", nullable = false, updatable = false)
   public UUID id;
 
-  @Column(name = "username", nullable = false, unique = true)
-  public String username;
-
   @Column(name = "email", nullable = false, unique = true)
   public String email;
+
+  @Column(name = "username", nullable = false, unique = true)
+  public String username;
 
   @Column(name = "password", nullable = false)
   public String password;
