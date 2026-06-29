@@ -42,7 +42,7 @@ public class UserResource {
   @Path("/me")
   @RolesAllowed("user")
   @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = UserResponse.class)))
-  @APIResponse(responseCode = "400", description = "User not found")
+  @APIResponse(responseCode = "404", description = "User not found")
   public Response me() {
     UUID userId = UUID.fromString(jwt.getSubject());
 
