@@ -32,7 +32,7 @@ public class UserService {
   public UserResponse findbyId(UUID id) {
     UserModel user = findById(id);
     if (user == null) {
-      throw new BadRequestException("User not found");
+      throw new NotFoundException("User not found");
     }
 
     return userConverter.toUserResponse(user);
