@@ -34,4 +34,10 @@ public class ExerciseService {
 
     return exerciseConverter.toResponse(exercise);
   }
+
+  public List<ExerciseResponse> filterExercises(String category) {
+    List<ExerciseModel> exercises = exerciseRepository.filter(category);
+
+    return exerciseConverter.toResponseList(exercises);
+  }
 }
