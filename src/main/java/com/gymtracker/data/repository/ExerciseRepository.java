@@ -13,4 +13,8 @@ public class ExerciseRepository implements PanacheRepository<ExerciseModel> {
   public List<ExerciseModel> fetchExercises() {
     return listAll();
   }
+
+  public ExerciseModel findByName(String name) {
+    return find("name", name).firstResult();
+  }
 }
