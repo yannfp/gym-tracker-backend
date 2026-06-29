@@ -10,6 +10,7 @@ import com.gymtracker.presentation.api.response.ExerciseResponse;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
@@ -42,11 +43,25 @@ public class ExerciseService {
     return exerciseConverter.toResponseList(exercises);
   }
 
+  @Transactional
   public ExerciseResponse addNewExercise(NewExerciseRequest newExercise) {
     ExerciseModel exercise = exerciseConverter.toModel(newExercise);
 
     exerciseRepository.createExercise(exercise);
 
     return exerciseConverter.toResponse(exercise);
+  }
+
+  @Transactional
+  public void deleteExercise(String exerciseName) {
+    ExerciseModel exercise = exerciseRepository.findByName(exerciseName);
+    if (exercise == null) {
+      throw new NotFoundException("Exercise not found");
+    }
+
+    Boolean deleted = exerciseRepository.deleteExercise(exercise.id);
+    if (!deleted) {
+      throw new NotFoundException("Exercise not found");
+    }
   }
 }
