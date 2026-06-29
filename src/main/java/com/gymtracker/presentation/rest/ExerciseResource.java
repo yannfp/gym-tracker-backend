@@ -48,4 +48,15 @@ public class ExerciseResource {
 
     return Response.ok(response).build();
   }
+
+  @GET
+  @Path("/{category}")
+  @RolesAllowed("user")
+  @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = ExerciseResponse.class, type = SchemaType.ARRAY)))
+  @APIResponse(responseCode = "404", description = "Category not found")
+  public Response filterExercises(@PathParam("category") String category) {
+    List<ExerciseResponse> response = exerciseService.filterExercises(category);
+
+    return Response.ok(response).build();
+  }
 }
