@@ -18,6 +18,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
 @Path("/exercises")
@@ -32,8 +33,14 @@ public class ExerciseResource {
   @Path("/")
   @RolesAllowed("user")
   @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = ExerciseResponse.class, type = SchemaType.ARRAY)))
-  public Response fetchExercises() {
-    List<ExerciseResponse> response = exerciseService.fetchExercises();
+  public Response fetchExercises(@QueryParam("category") String category) {
+    List<ExerciseResponse> response;
+
+    if (category != null && !category.trim().isEmpty()) {
+      response = exerciseService.filterExercises(category);
+    } else {
+      response = exerciseService.fetchExercises();
+    }
 
     return Response.ok(response).build();
   }
@@ -45,17 +52,6 @@ public class ExerciseResource {
   @APIResponse(responseCode = "404", description = "Exercise not found")
   public Response fetchExercise(@PathParam("name") String exerciseName) {
     ExerciseResponse response = exerciseService.findExerciseByName(exerciseName);
-
-    return Response.ok(response).build();
-  }
-
-  @GET
-  @Path("/{category}")
-  @RolesAllowed("user")
-  @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = ExerciseResponse.class, type = SchemaType.ARRAY)))
-  @APIResponse(responseCode = "404", description = "Category not found")
-  public Response filterExercises(@PathParam("category") String category) {
-    List<ExerciseResponse> response = exerciseService.filterExercises(category);
 
     return Response.ok(response).build();
   }
