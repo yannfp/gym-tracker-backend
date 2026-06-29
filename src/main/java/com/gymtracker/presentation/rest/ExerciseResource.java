@@ -20,6 +20,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
@@ -68,5 +69,16 @@ public class ExerciseResource {
     ExerciseResponse response = exerciseService.findExerciseByName(exerciseName);
 
     return Response.ok(response).build();
+  }
+
+  @DELETE
+  @Path("/{name}")
+  @RolesAllowed("user")
+  @APIResponse(responseCode = "204", description = "Exercise deleted")
+  @APIResponse(responseCode = "404", description = "Exercise not found")
+  public Response deleteExercise(@PathParam("name") String name) {
+    exerciseService.deleteExercise(name);
+
+    return Response.noContent().build();
   }
 }
