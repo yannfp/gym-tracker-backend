@@ -8,11 +8,14 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import com.gymtracker.domain.service.ExerciseService;
+import com.gymtracker.presentation.api.request.NewExerciseRequest;
 import com.gymtracker.presentation.api.response.ExerciseResponse;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
@@ -43,6 +46,17 @@ public class ExerciseResource {
     }
 
     return Response.ok(response).build();
+  }
+
+  @POST
+  @Path("/")
+  @RolesAllowed("user")
+  @APIResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = ExerciseResponse.class)))
+  @APIResponse(responseCode = "400", description = "Invalid muscle group")
+  public Response addNewExercise(@Valid NewExerciseRequest request) {
+    ExerciseResponse response = exerciseService.addNewExercise(request);
+
+    return Response.status(Response.Status.CREATED).entity(response).build();
   }
 
   @GET
