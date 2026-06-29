@@ -1,7 +1,6 @@
 package com.gymtracker.domain.service;
 
 import com.gymtracker.data.model.UserModel;
-import com.gymtracker.presentation.api.request.RegisterRequest;
 import com.gymtracker.presentation.api.response.AuthResponse;
 
 import jakarta.enterprise.context.ApplicationScoped;
