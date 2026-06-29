@@ -7,6 +7,7 @@ import com.gymtracker.data.model.MuscleGroup;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
@@ -27,5 +28,10 @@ public class ExerciseRepository implements PanacheRepository<ExerciseModel> {
     } catch (IllegalArgumentException | NullPointerException e) {
       throw new NotFoundException("Muscle category not found");
     }
+  }
+
+  @Transactional
+  public void createExercise(ExerciseModel exercise) {
+    persist(exercise);
   }
 }
