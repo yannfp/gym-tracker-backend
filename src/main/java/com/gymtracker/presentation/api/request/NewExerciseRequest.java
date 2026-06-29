@@ -6,6 +6,6 @@ public class NewExerciseRequest {
   @NotBlank
   public String name;
   @NotBlank
-  String mainMuscleGroup;
-  String secondaryMuscleGroup;
+  public String mainMuscleGroup;
+  public String secondaryMuscleGroup;
 }
