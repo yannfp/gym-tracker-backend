@@ -50,6 +50,10 @@ public class UserService {
     return findByEmail(email) != null || findByUsername(username) != null;
   }
 
+  public Boolean doesUserExist(UUID userId) {
+    return findById(userId) != null;
+  }
+
   @Transactional
   public UserModel registerUser(String email, String username, String password, String firstname, String lastname) {
     if (doesUserExist(email, username)) {
@@ -116,5 +120,17 @@ public class UserService {
     }
 
     return userConverter.toUserResponse(user);
+  }
+
+  @Transactional
+  public void deleteUser(UUID userId) {
+    if (!doesUserExist(userId)) {
+      throw new NotFoundException("User not found");
+    }
+
+    Boolean deleted = userRepository.deleteUser(userId);
+    if (!deleted) {
+      throw new NotFoundException("User not found");
+    }
   }
 }
