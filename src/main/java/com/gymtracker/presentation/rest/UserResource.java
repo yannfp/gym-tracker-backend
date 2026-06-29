@@ -16,7 +16,6 @@ import com.gymtracker.presentation.api.response.UserResponse;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
@@ -54,9 +53,9 @@ public class UserResource {
 
   @PUT
   @Path("/me")
-  @RolesAllowed("/user")
+  @RolesAllowed("user")
   @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = UserResponse.class)))
-  @APIResponse(responseCode = "400", description = "User not found")
+  @APIResponse(responseCode = "404", description = "User not found")
   public Response updateMe(@Valid UpdateUserRequest request) {
     UUID userId = UUID.fromString(jwt.getSubject());
 
