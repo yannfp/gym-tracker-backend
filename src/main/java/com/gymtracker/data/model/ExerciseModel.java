@@ -10,7 +10,7 @@ public class ExerciseModel {
   @Column(name = "id", nullable = false, updatable = false)
   public UUID id;
 
-  @Column(name = "name", nullable = false)
+  @Column(name = "name", nullable = false, unique = true)
   public String name;
 
   @Enumerated(EnumType.STRING)
