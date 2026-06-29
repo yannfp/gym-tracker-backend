@@ -5,6 +5,7 @@ import java.util.List;
 import com.gymtracker.converter.ExerciseConverter;
 import com.gymtracker.data.model.ExerciseModel;
 import com.gymtracker.data.repository.ExerciseRepository;
+import com.gymtracker.presentation.api.request.NewExerciseRequest;
 import com.gymtracker.presentation.api.response.ExerciseResponse;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -39,5 +40,13 @@ public class ExerciseService {
     List<ExerciseModel> exercises = exerciseRepository.filter(category);
 
     return exerciseConverter.toResponseList(exercises);
+  }
+
+  public ExerciseResponse addNewExercise(NewExerciseRequest newExercise) {
+    ExerciseModel exercise = exerciseConverter.toModel(newExercise);
+
+    exerciseRepository.createExercise(exercise);
+
+    return exerciseConverter.toResponse(exercise);
   }
 }
