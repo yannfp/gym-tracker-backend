@@ -13,6 +13,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 
@@ -46,7 +47,7 @@ public class UserService {
   }
 
   public Boolean doesUserExist(String email, String username) {
-    return findByEmail(email) == null && findByUsername(username) == null;
+    return findByEmail(email) != null || findByUsername(username) != null;
   }
 
   @Transactional
@@ -91,7 +92,7 @@ public class UserService {
 
     UserModel user = findById(userId);
     if (user == null) {
-      throw new BadRequestException("User not found");
+      throw new NotFoundException("User not found");
     }
 
     if (newEmail != null && !newEmail.isBlank()) {
