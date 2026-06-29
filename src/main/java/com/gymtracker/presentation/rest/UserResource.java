@@ -8,7 +8,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import com.gymtracker.converter.UserConverter;
-import com.gymtracker.data.model.UserModel;
 import com.gymtracker.domain.service.UserService;
 import com.gymtracker.presentation.api.request.UpdateUserRequest;
 import com.gymtracker.presentation.api.response.UserResponse;
@@ -17,6 +16,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -63,5 +63,18 @@ public class UserResource {
         request.firstname, request.lastname);
 
     return Response.ok(response).build();
+  }
+
+  @DELETE
+  @Path("/me")
+  @RolesAllowed("user")
+  @APIResponse(responseCode = "204", description = "User deleted")
+  @APIResponse(responseCode = "404", description = "User not found")
+  public Response deleteMe() {
+    UUID userId = UUID.fromString(jwt.getSubject());
+
+    userService.deleteUser(userId);
+
+    return Response.noContent().build();
   }
 }
