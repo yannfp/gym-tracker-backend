@@ -10,6 +10,9 @@ import com.gymtracker.presentation.api.response.WorkoutResponse;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 
 @ApplicationScoped
 public class WorkoutService {
@@ -28,5 +31,19 @@ public class WorkoutService {
 
   public WorkoutModel fetchUserActiveWorkout(UUID id) {
     return workoutRepository.fetchUserActiveWorkout(id);
+  }
+
+  @Transactional
+  public WorkoutResponse createNewWorkout(UUID id) {
+
+    WorkoutModel activeWorkout = fetchUserActiveWorkout(id);
+    if (activeWorkout != null) {
+      throw new WebApplicationException("Cannot start a workout you already have one in progress",
+          Response.Status.CONFLICT);
+    }
+
+    WorkoutModel workout = workoutRepository.createNewWorkout(id);
+
+    return workoutConverter.toResponse(workout);
   }
 }

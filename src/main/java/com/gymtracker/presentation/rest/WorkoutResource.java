@@ -18,6 +18,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
@@ -63,6 +64,19 @@ public class WorkoutResource {
     }
 
     WorkoutResponse response = workoutConverter.toResponse(workout);
+
+    return Response.ok(response).build();
+  }
+
+  @POST
+  @Path("/")
+  @RolesAllowed("user")
+  @APIResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = WorkoutResponse.class)))
+  @APIResponse(responseCode = "409", description = "Cannot start a workout you already have one in progress")
+  public Response createNewWorkout() {
+    UUID userId = UUID.fromString(jwt.getSubject());
+
+    WorkoutResponse response = workoutService.createNewWorkout(userId);
 
     return Response.ok(response).build();
   }
