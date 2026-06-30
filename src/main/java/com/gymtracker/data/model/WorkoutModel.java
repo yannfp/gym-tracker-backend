@@ -15,11 +15,11 @@ public class WorkoutModel {
   @Column(name = "name", nullable = false)
   public String name;
 
-  @Column(name = "duration_seconds", nullable = false)
+  @Column(name = "duration_seconds", nullable = true)
   public Long durationSeconds;
 
   @Column(name = "started_at", nullable = false, updatable = false)
-  public LocalDateTime startedAt;
+  public LocalDateTime startedAt = LocalDateTime.now();
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
