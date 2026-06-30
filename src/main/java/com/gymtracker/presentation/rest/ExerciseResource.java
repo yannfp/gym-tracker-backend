@@ -9,6 +9,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import com.gymtracker.domain.service.ExerciseService;
 import com.gymtracker.presentation.api.request.NewExerciseRequest;
+import com.gymtracker.presentation.api.request.UpdateExerciseRequest;
 import com.gymtracker.presentation.api.response.ExerciseResponse;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -16,6 +17,7 @@ import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
@@ -67,6 +69,19 @@ public class ExerciseResource {
   @APIResponse(responseCode = "404", description = "Exercise not found")
   public Response fetchExercise(@PathParam("name") String exerciseName) {
     ExerciseResponse response = exerciseService.findExerciseByName(exerciseName);
+
+    return Response.ok(response).build();
+  }
+
+  @PUT
+  @Path("/{name}")
+  @RolesAllowed("user")
+  @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = ExerciseResponse.class)))
+  @APIResponse(responseCode = "404", description = "Exercise not found")
+  @APIResponse(responseCode = "409", description = "Exercise with this name already exists")
+  @APIResponse(responseCode = "400", description = "Invalid muscle group")
+  public Response updateExercise(@PathParam("name") String name, UpdateExerciseRequest request) {
+    ExerciseResponse response = exerciseService.updateExercise(name, request);
 
     return Response.ok(response).build();
   }
