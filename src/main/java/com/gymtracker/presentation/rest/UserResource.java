@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
@@ -51,7 +51,7 @@ public class UserResource {
     return Response.ok(response).build();
   }
 
-  @PUT
+  @PATCH
   @Path("/me")
   @RolesAllowed("user")
   @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = UserResponse.class)))

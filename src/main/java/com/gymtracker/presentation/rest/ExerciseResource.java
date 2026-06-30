@@ -16,8 +16,8 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
@@ -73,7 +73,7 @@ public class ExerciseResource {
     return Response.ok(response).build();
   }
 
-  @PUT
+  @PATCH
   @Path("/{name}")
   @RolesAllowed("user")
   @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = ExerciseResponse.class)))
