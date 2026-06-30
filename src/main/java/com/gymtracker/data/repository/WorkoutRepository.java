@@ -20,7 +20,7 @@ public class WorkoutRepository implements PanacheRepositoryBase<WorkoutModel, UU
   UserRepository userRepository;
 
   public List<WorkoutModel> fetchUserWorkouts(UUID id) {
-    return list("user.id", id);
+    return list("user.id = ?1 and status = ?2", id, WorkoutStatus.COMPLETED);
   }
 
   public WorkoutModel fetchUserActiveWorkout(UUID id) {
