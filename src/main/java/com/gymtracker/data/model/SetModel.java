@@ -19,7 +19,7 @@ public class SetModel {
   public Integer repetitions;
 
   @Column(name = "weight", nullable = false)
-  public Integer weight;
+  public Double weight;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "workout_exercise_id", nullable = false)
