@@ -11,16 +11,21 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import com.gymtracker.converter.WorkoutConverter;
 import com.gymtracker.data.model.WorkoutModel;
+import com.gymtracker.data.model.WorkoutStatus;
 import com.gymtracker.domain.service.WorkoutService;
 import com.gymtracker.presentation.api.response.WorkoutResponse;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -50,6 +55,20 @@ public class WorkoutResource {
     return Response.ok(response).build();
   }
 
+  @POST
+  @Path("/")
+  @RolesAllowed("user")
+  @Transactional
+  @APIResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = WorkoutResponse.class)))
+  @APIResponse(responseCode = "409", description = "Cannot start a workout you already have one in progress")
+  public Response createNewWorkout() {
+    UUID userId = UUID.fromString(jwt.getSubject());
+
+    WorkoutResponse response = workoutService.createNewWorkout(userId);
+
+    return Response.ok(response).build();
+  }
+
   @GET
   @Path("/active")
   @RolesAllowed("user")
@@ -68,16 +87,22 @@ public class WorkoutResource {
     return Response.ok(response).build();
   }
 
-  @POST
-  @Path("/")
+  @PATCH
+  @Path("/active/status")
   @RolesAllowed("user")
-  @APIResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = WorkoutResponse.class)))
-  @APIResponse(responseCode = "409", description = "Cannot start a workout you already have one in progress")
-  public Response createNewWorkout() {
+  @Transactional
+  @APIResponse(responseCode = "204", description = "Status updated")
+  @APIResponse(responseCode = "400", description = "Need to specify a valid status")
+  @APIResponse(responseCode = "404", description = "No active workout")
+  public Response updateActiveStatus(@QueryParam("to") WorkoutStatus targetStatus) {
+    if (targetStatus == null || targetStatus == WorkoutStatus.IN_PROGRESS) {
+      throw new BadRequestException("Need to specify a valid status");
+    }
+
     UUID userId = UUID.fromString(jwt.getSubject());
 
-    WorkoutResponse response = workoutService.createNewWorkout(userId);
+    workoutService.updateActiveStatus(userId, targetStatus);
 
-    return Response.ok(response).build();
+    return Response.noContent().build();
   }
 }
