@@ -15,11 +15,15 @@ public class WorkoutModel {
   @Column(name = "name", nullable = false)
   public String name;
 
+  @Column(name = "duration_seconds", nullable = false)
+  public Long durationSeconds;
+
   @Column(name = "started_at", nullable = false, updatable = false)
   public LocalDateTime startedAt;
 
-  @Column(name = "duration_seconds", nullable = false)
-  public Long durationSeconds;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false)
+  public WorkoutStatus status = WorkoutStatus.IN_PROGRESS;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
