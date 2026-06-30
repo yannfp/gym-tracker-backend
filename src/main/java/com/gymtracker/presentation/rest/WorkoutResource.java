@@ -9,6 +9,8 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
+import com.gymtracker.converter.WorkoutConverter;
+import com.gymtracker.data.model.WorkoutModel;
 import com.gymtracker.domain.service.WorkoutService;
 import com.gymtracker.presentation.api.response.WorkoutResponse;
 
@@ -32,6 +34,9 @@ public class WorkoutResource {
   @Inject
   WorkoutService workoutService;
 
+  @Inject
+  WorkoutConverter workoutConverter;
+
   @GET
   @Path("/")
   @RolesAllowed("user")
@@ -40,6 +45,24 @@ public class WorkoutResource {
     UUID userId = UUID.fromString(jwt.getSubject());
 
     List<WorkoutResponse> response = workoutService.fetchUserWorkouts(userId);
+
+    return Response.ok(response).build();
+  }
+
+  @GET
+  @Path("/active")
+  @RolesAllowed("user")
+  @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = WorkoutResponse.class)))
+  @APIResponse(responseCode = "204", description = "No active workout in progress")
+  public Response fetchActiveWorkout() {
+    UUID userId = UUID.fromString(jwt.getSubject());
+
+    WorkoutModel workout = workoutService.fetchUserActiveWorkout(userId);
+    if (workout == null) {
+      return Response.noContent().build();
+    }
+
+    WorkoutResponse response = workoutConverter.toResponse(workout);
 
     return Response.ok(response).build();
   }

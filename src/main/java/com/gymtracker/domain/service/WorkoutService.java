@@ -25,4 +25,8 @@ public class WorkoutService {
 
     return workoutConverter.toResponseList(workouts);
   }
+
+  public WorkoutModel fetchUserActiveWorkout(UUID id) {
+    return workoutRepository.fetchUserActiveWorkout(id);
+  }
 }
