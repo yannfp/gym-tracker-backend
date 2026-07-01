@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.UUID;
 
 import com.gymtracker.converter.SetConverter;
+import com.gymtracker.data.model.SetModel;
 import com.gymtracker.data.model.WorkoutExerciseModel;
+import com.gymtracker.presentation.api.request.AddSetRequest;
 import com.gymtracker.presentation.api.response.SetResponse;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
@@ -24,6 +27,20 @@ public class SetService {
     WorkoutExerciseModel exercise = validateExerciseOwnership(userId, exerciseId);
 
     return setConverter.toResponseList(exercise.sets);
+  }
+
+  @Transactional
+  public SetResponse addSet(UUID userId, UUID exerciseId, AddSetRequest request) {
+    WorkoutExerciseModel exercise = validateExerciseOwnership(userId, exerciseId);
+
+    SetModel set = new SetModel();
+    set.workoutExercise = exercise;
+    set.setNumber = exercise.sets.size() + 1;
+
+    set.repetitions = request.repetitions;
+    set.weight = request.weight;
+
+    return setConverter.toResponse(set);
   }
 
   private WorkoutExerciseModel validateExerciseOwnership(UUID userId, UUID exerciseId) {
