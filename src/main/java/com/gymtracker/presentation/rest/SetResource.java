@@ -56,7 +56,7 @@ public class SetResource {
   @Transactional
   @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = SetResponse.class)))
   @APIResponse(responseCode = "404", description = "Exercise not found or no workout is in progress")
-  public Response addSet(@PathParam("exerciseId") UUID exerciseId, @Valid AddSetRequest request) {
+  public Response addSet(@PathParam("exerciseId") UUID exerciseId, AddSetRequest request) {
     UUID userId = UUID.fromString(jwt.getSubject());
 
     SetResponse response = setService.addSet(userId, exerciseId, request);

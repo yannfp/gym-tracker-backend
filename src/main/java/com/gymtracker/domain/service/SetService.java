@@ -36,9 +36,16 @@ public class SetService {
     SetModel set = new SetModel();
     set.workoutExercise = exercise;
     set.setNumber = exercise.sets.size() + 1;
+    set.repetitions = 0;
+    set.weight = 0.0;
 
-    set.repetitions = request.repetitions;
-    set.weight = request.weight;
+    if (request.repetitions != null) {
+      set.repetitions = request.repetitions;
+    }
+
+    if (request.weight != null) {
+      set.weight = request.weight;
+    }
 
     return setConverter.toResponse(set);
   }
