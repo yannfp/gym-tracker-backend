@@ -51,4 +51,9 @@ public class WorkoutRepository implements PanacheRepositoryBase<WorkoutModel, UU
 
     return workout;
   }
+
+  @Transactional
+  public Boolean deleteWorkout(UUID workoutId) {
+    return deleteById(workoutId);
+  }
 }
