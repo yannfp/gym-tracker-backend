@@ -11,6 +11,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import com.gymtracker.domain.service.SetService;
 import com.gymtracker.presentation.api.request.AddSetRequest;
+import com.gymtracker.presentation.api.request.UpdateSetRequest;
 import com.gymtracker.presentation.api.response.SetResponse;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -19,6 +20,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -60,6 +62,20 @@ public class SetResource {
     UUID userId = UUID.fromString(jwt.getSubject());
 
     SetResponse response = setService.addSet(userId, exerciseId, request);
+
+    return Response.ok(response).build();
+  }
+
+  @PATCH
+  @Path("/{setId}")
+  @RolesAllowed("user")
+  @Transactional
+  @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = SetResponse.class)))
+  @APIResponse(responseCode = "404", description = "Set not found or workout is not active")
+  public Response updateSet(@PathParam("setId") UUID setId, @Valid UpdateSetRequest request) {
+    UUID userId = UUID.fromString(jwt.getSubject());
+
+    SetResponse response = setService.updateSet(userId, setId, request);
 
     return Response.ok(response).build();
   }
