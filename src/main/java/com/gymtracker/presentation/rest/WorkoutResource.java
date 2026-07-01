@@ -9,6 +9,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
+import com.arjuna.ats.internal.arjuna.objectstore.jdbc.drivers.postgres_driver;
 import com.gymtracker.converter.WorkoutConverter;
 import com.gymtracker.data.model.WorkoutModel;
 import com.gymtracker.data.model.WorkoutStatus;
@@ -20,10 +21,12 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
@@ -67,6 +70,19 @@ public class WorkoutResource {
     WorkoutResponse response = workoutService.createNewWorkout(userId);
 
     return Response.ok(response).build();
+  }
+
+  @DELETE
+  @Path("/{id}")
+  @RolesAllowed("user")
+  @Transactional
+  @APIResponse(responseCode = "204", description = "Workout deleted")
+  @APIResponse(responseCode = "400", description = "Invalid workout id")
+  public Response deleteWorkout(@PathParam("id") UUID workoutId) {
+
+    workoutService.deleteWorkout(workoutId);
+
+    return Response.noContent().build();
   }
 
   @GET

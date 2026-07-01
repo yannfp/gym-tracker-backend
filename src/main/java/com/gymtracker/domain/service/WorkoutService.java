@@ -84,6 +84,14 @@ public class WorkoutService {
   }
 
   @Transactional
+  public void deleteWorkout(UUID workoutId) {
+    Boolean deleted = workoutRepository.deleteWorkout(workoutId);
+    if (!deleted) {
+      throw new BadRequestException("Invalid workout id");
+    }
+  }
+
+  @Transactional
   public void deleteExercise(UUID exerciseId, UUID userId) {
     findActiveWorkout(userId);
 
