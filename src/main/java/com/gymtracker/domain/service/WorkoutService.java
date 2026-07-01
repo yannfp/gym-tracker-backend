@@ -49,7 +49,6 @@ public class WorkoutService {
 
   @Transactional
   public WorkoutResponse createNewWorkout(UUID userId) {
-
     WorkoutModel activeWorkout = fetchUserActiveWorkout(userId);
     if (activeWorkout != null) {
       throw new WebApplicationException("Cannot start a workout you already have one in progress",
@@ -63,20 +62,14 @@ public class WorkoutService {
 
   @Transactional
   public void updateActiveStatus(UUID userId, WorkoutStatus targetStatus) {
-    WorkoutModel activeWorkout = fetchUserActiveWorkout(userId);
-    if (activeWorkout == null) {
-      throw new NotFoundException("No active workout");
-    }
+    WorkoutModel activeWorkout = findActiveWorkout(userId);
 
     activeWorkout.status = targetStatus;
   }
 
   @Transactional
   public WorkoutExerciseResponse addExercise(UUID exerciseId, UUID userId) {
-    WorkoutModel activeWorkout = fetchUserActiveWorkout(userId);
-    if (activeWorkout == null) {
-      throw new NotFoundException("No active workout");
-    }
+    WorkoutModel activeWorkout = findActiveWorkout(userId);
 
     ExerciseModel exercise = exerciseService.findByUUID(exerciseId);
     if (exercise == null) {
@@ -88,5 +81,21 @@ public class WorkoutService {
     activeWorkout.exercises.add(workoutExercise);
 
     return workoutExerciseConverter.toResponse(workoutExercise);
+  }
+
+  @Transactional
+  public void deleteExercise(UUID exerciseId, UUID userId) {
+    findActiveWorkout(userId);
+
+    workoutExerciseService.deleteExercise(exerciseId, userId);
+  }
+
+  private WorkoutModel findActiveWorkout(UUID userId) {
+    WorkoutModel activeWorkout = fetchUserActiveWorkout(userId);
+    if (activeWorkout == null) {
+      throw new NotFoundException("No active workout");
+    }
+
+    return activeWorkout;
   }
 }

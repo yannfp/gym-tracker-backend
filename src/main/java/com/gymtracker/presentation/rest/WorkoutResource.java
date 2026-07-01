@@ -23,10 +23,12 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
@@ -110,7 +112,7 @@ public class WorkoutResource {
   }
 
   @POST
-  @Path("/active/active/exercises")
+  @Path("/active/exercises")
   @RolesAllowed("user")
   @Transactional
   @APIResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = WorkoutExerciseResponse.class)))
@@ -122,5 +124,17 @@ public class WorkoutResource {
     WorkoutExerciseResponse response = workoutService.addExercise(request.exerciseId, userId);
 
     return Response.ok(response).build();
+  }
+
+  @DELETE
+  @Path("/active/exercises/{id}")
+  @RolesAllowed("user")
+  @Transactional
+  public Response deleteExercise(@PathParam("id") UUID exerciseId) {
+    UUID userId = UUID.fromString(jwt.getSubject());
+
+    workoutService.deleteExercise(exerciseId, userId);
+
+    return Response.noContent().build();
   }
 }
