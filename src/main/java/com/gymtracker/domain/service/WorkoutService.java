@@ -1,14 +1,17 @@
 package com.gymtracker.domain.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import com.gymtracker.converter.WorkoutConverter;
 import com.gymtracker.converter.WorkoutExerciseConverter;
 import com.gymtracker.data.model.ExerciseModel;
+import com.gymtracker.data.model.UserModel;
 import com.gymtracker.data.model.WorkoutExerciseModel;
 import com.gymtracker.data.model.WorkoutModel;
 import com.gymtracker.data.model.WorkoutStatus;
+import com.gymtracker.data.repository.UserRepository;
 import com.gymtracker.data.repository.WorkoutRepository;
 import com.gymtracker.presentation.api.response.WorkoutExerciseResponse;
 import com.gymtracker.presentation.api.response.WorkoutResponse;
@@ -31,6 +34,8 @@ public class WorkoutService {
 
   @Inject
   WorkoutRepository workoutRepository;
+  @Inject
+  UserRepository userRepository;
 
   @Inject
   WorkoutExerciseService workoutExerciseService;
@@ -55,7 +60,9 @@ public class WorkoutService {
           Response.Status.CONFLICT);
     }
 
-    WorkoutModel workout = workoutRepository.createNewWorkout(userId);
+    WorkoutModel workout = createEmptyWorkout(userId);
+
+    workoutRepository.createWorkout(workout);
 
     return workoutConverter.toResponse(workout);
   }
@@ -105,5 +112,27 @@ public class WorkoutService {
     }
 
     return activeWorkout;
+  }
+
+  private WorkoutModel createEmptyWorkout(UUID userId) {
+    UserModel userProxy = userRepository.getEntityManager().getReference(UserModel.class, userId);
+
+    WorkoutModel workout = new WorkoutModel();
+
+    int hour = workout.startedAt.getHour();
+
+    if (hour <= 12) {
+      workout.name = "Morning workout";
+    } else if (hour > 12 && hour <= 18) {
+      workout.name = "Afternoon workout";
+    } else {
+      workout.name = "Evening workout";
+    }
+
+    workout.durationSeconds = null;
+    workout.user = userProxy;
+    workout.exercises = new ArrayList<>();
+
+    return workout;
   }
 }

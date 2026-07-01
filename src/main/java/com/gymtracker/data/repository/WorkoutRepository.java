@@ -1,10 +1,8 @@
 package com.gymtracker.data.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.gymtracker.data.model.UserModel;
 import com.gymtracker.data.model.WorkoutModel;
 import com.gymtracker.data.model.WorkoutStatus;
 
@@ -28,28 +26,8 @@ public class WorkoutRepository implements PanacheRepositoryBase<WorkoutModel, UU
   }
 
   @Transactional
-  public WorkoutModel createNewWorkout(UUID id) {
-    UserModel userProxy = userRepository.getEntityManager().getReference(UserModel.class, id);
-
-    WorkoutModel workout = new WorkoutModel();
-
-    int hour = workout.startedAt.getHour();
-
-    if (hour <= 12) {
-      workout.name = "Morning workout";
-    } else if (hour > 12 && hour <= 18) {
-      workout.name = "Afternoon workout";
-    } else {
-      workout.name = "Evening workout";
-    }
-
-    workout.durationSeconds = null;
-    workout.user = userProxy;
-    workout.exercises = new ArrayList<>();
-
+  public void createWorkout(WorkoutModel workout) {
     persist(workout);
-
-    return workout;
   }
 
   @Transactional
