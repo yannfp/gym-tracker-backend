@@ -1,6 +1,7 @@
 package com.gymtracker.domain.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.gymtracker.converter.ExerciseConverter;
 import com.gymtracker.data.model.ExerciseModel;
@@ -31,6 +32,10 @@ public class ExerciseService {
     List<ExerciseModel> exercises = exerciseRepository.fetchExercises();
 
     return exerciseConverter.toResponseList(exercises);
+  }
+
+  public ExerciseModel findByUUID(UUID exerciseId) {
+    return exerciseRepository.findByUUID(exerciseId);
   }
 
   public ExerciseResponse findExerciseByName(String exerciseName) {
