@@ -130,6 +130,9 @@ public class WorkoutResource {
   @Path("/active/exercises/{id}")
   @RolesAllowed("user")
   @Transactional
+  @APIResponse(responseCode = "204", description = "Exercise deleted")
+  @APIResponse(responseCode = "400", description = "Invalid exercise id")
+  @APIResponse(responseCode = "404", description = "No active workout")
   public Response deleteExercise(@PathParam("id") UUID exerciseId) {
     UUID userId = UUID.fromString(jwt.getSubject());
 
