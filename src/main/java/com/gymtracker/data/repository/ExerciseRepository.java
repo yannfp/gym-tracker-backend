@@ -31,6 +31,10 @@ public class ExerciseRepository implements PanacheRepositoryBase<ExerciseModel, 
     }
   }
 
+  public ExerciseModel findByUUID(UUID exerciseId) {
+    return findById(exerciseId);
+  }
+
   @Transactional
   public void createExercise(ExerciseModel exercise) {
     persist(exercise);
