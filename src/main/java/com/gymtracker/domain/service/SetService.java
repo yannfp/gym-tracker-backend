@@ -72,6 +72,16 @@ public class SetService {
     return setConverter.toResponse(set);
   }
 
+  @Transactional
+  public void deleteSet(UUID userId, UUID setId) {
+    findActiveSet(userId, setId);
+
+    Boolean deleted = setRepository.deleteSet(setId);
+    if (!deleted) {
+      throw new NotFoundException("Exercise not found or no workout is in progress");
+    }
+  }
+
   private WorkoutExerciseModel validateExerciseOwnership(UUID userId, UUID exerciseId) {
     WorkoutExerciseModel exercise = workoutExerciseService.doesBelongToUser(userId, exerciseId);
     if (exercise == null) {

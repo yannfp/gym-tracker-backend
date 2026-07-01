@@ -19,6 +19,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
@@ -78,5 +79,19 @@ public class SetResource {
     SetResponse response = setService.updateSet(userId, setId, request);
 
     return Response.ok(response).build();
+  }
+
+  @DELETE
+  @Path("/{setId}")
+  @RolesAllowed("user")
+  @Transactional
+  @APIResponse(responseCode = "204", description = "Set deleted")
+  @APIResponse(responseCode = "404", description = "Set not found or workout is not active")
+  public Response deleteSet(@PathParam("setId") UUID setId) {
+    UUID userId = UUID.fromString(jwt.getSubject());
+
+    setService.deleteSet(userId, setId);
+
+    return Response.noContent().build();
   }
 }

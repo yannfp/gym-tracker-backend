@@ -16,4 +16,9 @@ public class SetRepository implements PanacheRepositoryBase<SetModel, UUID> {
   public void addSet(SetModel set) {
     persist(set);
   }
+
+  @Transactional
+  public Boolean deleteSet(UUID setId) {
+    return deleteById(setId);
+  }
 }
