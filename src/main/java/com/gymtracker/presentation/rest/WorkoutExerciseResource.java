@@ -40,7 +40,7 @@ public class WorkoutExerciseResource {
   WorkoutService workoutService;
 
   @POST
-  @Path("/active/exercises")
+  @Path("/")
   @RolesAllowed("user")
   @Transactional
   @APIResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = WorkoutExerciseResponse.class)))
@@ -55,7 +55,7 @@ public class WorkoutExerciseResource {
   }
 
   @DELETE
-  @Path("/active/exercises/{id}")
+  @Path("/{id}")
   @RolesAllowed("user")
   @Transactional
   @APIResponse(responseCode = "204", description = "Exercise deleted")
