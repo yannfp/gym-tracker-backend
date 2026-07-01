@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.Set;
 import java.util.UUID;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import com.gymtracker.data.model.UserModel;
@@ -23,8 +24,11 @@ public class TokenService {
   @Inject
   io.smallrye.jwt.auth.principal.JWTParser jwtParser;
 
-  private static final long ACCESS_TOKEN_DURARION = 900;
-  private static final long REFRESH_TOKEN_DURATION = 604800;
+  @ConfigProperty(name = "jwt.access-token.duration", defaultValue = "900")
+  long accessTokenDuration;
+
+  @ConfigProperty(name = "jwt.refresh-token.duration", defaultValue = "604800")
+  long refreshTokenDuration;
 
   public String generateAccessToken(UserModel user) {
     return Jwt.issuer("gymtracker")
@@ -32,7 +36,7 @@ public class TokenService {
         .groups(Set.of("user"))
         .claim("email", user.email)
         .claim("username", user.username)
-        .expiresIn(Duration.ofSeconds(ACCESS_TOKEN_DURARION))
+        .expiresIn(Duration.ofSeconds(accessTokenDuration))
         .sign();
   }
 
@@ -40,7 +44,7 @@ public class TokenService {
     return Jwt.issuer("gymtracker")
         .subject(user.id.toString())
         .claim("type", "refresh")
-        .expiresIn(Duration.ofSeconds(REFRESH_TOKEN_DURATION))
+        .expiresIn(Duration.ofSeconds(refreshTokenDuration))
         .sign();
   }
 
