@@ -1,6 +1,7 @@
 package com.gymtracker.converter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.gymtracker.data.model.SetModel;
@@ -14,7 +15,7 @@ public class SetConverter {
     return new SetResponse(set.id, set.setNumber, set.repetitions, set.weight);
   }
 
-  public List<SetResponse> toResponseList(List<SetModel> sets) {
+  public List<SetResponse> toResponseList(Collection<SetModel> sets) {
     List<SetResponse> response = new ArrayList<>();
 
     sets.forEach(set -> response.add(toResponse(set)));

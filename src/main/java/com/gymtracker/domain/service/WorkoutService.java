@@ -131,7 +131,6 @@ public class WorkoutService {
 
     workout.durationSeconds = null;
     workout.user = userProxy;
-    workout.exercises = new ArrayList<>();
 
     return workout;
   }

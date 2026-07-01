@@ -19,5 +19,5 @@ public class WorkoutExerciseModel {
   public ExerciseModel exercise;
 
   @OneToMany(mappedBy = "workoutExercise", cascade = CascadeType.ALL, orphanRemoval = true)
-  public List<SetModel> sets = new ArrayList<>();
+  public Set<SetModel> sets = new LinkedHashSet<>();
 }

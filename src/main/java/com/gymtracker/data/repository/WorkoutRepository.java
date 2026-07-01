@@ -18,11 +18,17 @@ public class WorkoutRepository implements PanacheRepositoryBase<WorkoutModel, UU
   UserRepository userRepository;
 
   public List<WorkoutModel> fetchUserWorkouts(UUID id) {
-    return list("user.id = ?1 and status = ?2", id, WorkoutStatus.COMPLETED);
+    return find("SELECT DISTINCT w FROM WorkoutModel w " +
+        "LEFT JOIN FETCH w.exercises e " +
+        "LEFT JOIN FETCH e.sets " +
+        "WHERE w.user.id = ?1 AND w.status = ?2", id, WorkoutStatus.COMPLETED).list();
   }
 
   public WorkoutModel fetchUserActiveWorkout(UUID id) {
-    return find("user.id = ?1 and status ?2", id, WorkoutStatus.IN_PROGRESS).firstResult();
+    return find("SELECT DISTINCT w FROM WorkoutModel w " +
+        "LEFT JOIN FETCH w.exercises e " +
+        "LEFT JOIN FETCH e.sets " +
+        "WHERE w.user.id = ?1 AND w.status = ?2", id, WorkoutStatus.IN_PROGRESS).firstResult();
   }
 
   @Transactional

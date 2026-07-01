@@ -24,7 +24,6 @@ public class WorkoutExerciseService {
 
     workoutExercise.workout = workout;
     workoutExercise.exercise = exercise;
-    workoutExercise.sets = new ArrayList<>();
 
     return workoutExercise;
   }

@@ -1,6 +1,7 @@
 package com.gymtracker.converter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.gymtracker.data.model.WorkoutModel;
@@ -28,7 +29,7 @@ public class WorkoutConverter {
         workoutExercise);
   }
 
-  public List<WorkoutResponse> toResponseList(List<WorkoutModel> workouts) {
+  public List<WorkoutResponse> toResponseList(Collection<WorkoutModel> workouts) {
     List<WorkoutResponse> response = new ArrayList<>();
 
     workouts.forEach(workout -> response.add(toResponse(workout)));
