@@ -38,4 +38,8 @@ public class WorkoutExerciseService {
 
     return workoutExerciseRepository.deleteExercise(exerciseId);
   }
+
+  public WorkoutExerciseModel doesBelongToUser(UUID userId, UUID exerciseId) {
+    return doesBelongToUser(userId, exerciseId);
+  }
 }
